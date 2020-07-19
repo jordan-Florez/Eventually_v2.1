@@ -1,18 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@drawable/fondoxd"
-    tools:context=".registro_Usuarios">
+    tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <fragment
+        android:id="@+id/fragment_Registro"
+        android:name="cursos.alain.eventually_v2.Fragments.RegistroFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_weight="2"
+
         android:layout_marginTop="30dp"
         android:layout_gravity="center"
         android:gravity="center"
@@ -100,35 +103,9 @@
             android:textStyle="bold" />
 
 
+    </fragment>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="182dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:layout_gravity="center"
-        android:layout_marginBottom="10dp"
-        android:orientation="vertical">
-
-        <Button
-            android:id="@+id/Btn_Registrar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:backgroundTint="@color/colorBoton_Prueba1"
-            android:text="@string/CRegistro"
-            android:textColor="@color/colorAzul_Sutil" />
-
-        <Button
-            android:id="@+id/button3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0"
-            android:backgroundTint="@color/colorBoton_Prueba1"
-            android:onClick="Login"
-            android:text="@string/Cancelar"
-            android:textColor="@color/colorAzul_Sutil" />
-    </LinearLayout>
 
 </LinearLayout>
+
+
