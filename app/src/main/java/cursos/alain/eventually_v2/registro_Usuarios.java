@@ -17,16 +17,25 @@ package cursos.alain.eventually_v2;
         import com.android.volley.toolbox.StringRequest;
         import com.android.volley.toolbox.Volley;
 
+
         import java.net.URL;
         import java.util.HashMap;
         import java.util.Map;
 
 
 
+
+        import java.util.HashMap;
+        import java.util.Map;
+
+
 public class registro_Usuarios extends AppCompatActivity {
 
     EditText Txt_Documento, Txt_Usuario, Txt_Email, Txt_Contra, Txt_Contra_c;
     Button Btn_Registrar;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +57,6 @@ public class registro_Usuarios extends AppCompatActivity {
 
             }
         });
-
 
     }
 
