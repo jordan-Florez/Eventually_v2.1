@@ -1,5 +1,6 @@
 package cursos.alain.eventually_v2.Fragments;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +8,7 @@ import android.content.SharedPreferences;
 import android.nfc.Tag;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,6 +41,7 @@ import cursos.alain.eventually_v2.Adapters.GruposAdapter;
 import cursos.alain.eventually_v2.CreacionGrupo;
 import cursos.alain.eventually_v2.R;
 import cursos.alain.eventually_v2.entidades.Grupos1;
+import cursos.alain.eventually_v2.interfaces.iComunicaFragments;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -58,9 +61,15 @@ public class MisGruposFragment extends Fragment implements Response.Listener<JSO
 
     FloatingActionButton fab;
 
-    String IdActualizar;
+    String Idok;
 
     RequestQueue requestQueue; //Definimos este request aquí ya que varios metodos harán uso del mismo objeto.
+
+    Activity activity;
+    iComunicaFragments interfaceComunicaFragments;
+
+    String IdActualizar;
+
 
 
     RecyclerView recyclerGrupos;
@@ -109,7 +118,9 @@ public class MisGruposFragment extends Fragment implements Response.Listener<JSO
                              Bundle savedInstanceState) {
         View vista = inflater.inflate(R.layout.fragment_mis_grupos,container,false);
         fab = vista.findViewById(R.id.fab_CrearGrupo);
-
+        recuperarId();
+        iComunicaFragments interfaceComunicaFragments;
+        Log.d(Idok, "onCreateView: ");
         listaGrupos = new ArrayList<>();
 
         recyclerGrupos = (RecyclerView) vista.findViewById(R.id.idRecycler);
@@ -128,7 +139,9 @@ public class MisGruposFragment extends Fragment implements Response.Listener<JSO
             }
         });
 
-        recuperarId();
+
+
+
 
         return vista;
     }
@@ -141,13 +154,19 @@ public class MisGruposFragment extends Fragment implements Response.Listener<JSO
         progress.setMessage("Consultando...");
         progress.show();
 
-       String url = "http://192.168.1.67/Eventually_01/consultar_grupos.php";
+
+        String url = "http://192.168.1.67/Eventually_01/Consultar_Grupos.php?idok=" + Idok;
         //String url = "http://192.168.1.66/Eventually_01/Consultar_Grupos.php";
         //String url = "http://192.168.1.56/Eventually_01/Consultar_Grupos.php";
 
         jsonObjectRequest = new  JsonObjectRequest(Request.Method.GET,url,null,this,this);
         request.add(jsonObjectRequest);
 
+
+
+
+
+/*
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
 
 
@@ -160,6 +179,40 @@ public class MisGruposFragment extends Fragment implements Response.Listener<JSO
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getActivity(),"Algo ha salido mal!",Toast.LENGTH_SHORT).show();
+            }
+        }){
+            @Override
+        protected Map<String, String> getParams() throws AuthFailureError {
+
+            Map<String,String> parametros=new HashMap<String, String>();
+
+            //Meidante el método put, definimos los datos que vamos a enviar.
+            parametros.put("idok",IdActualizar);
+
+            Log.d(String.valueOf(parametros), "recuperarId: ");
+
+            return parametros;
+        }
+        };
+        //Aquí procesaremos las peticiones hechas por nuestra app para que la libreria se encargue de ejecutarlas.
+        requestQueue = Volley.newRequestQueue(getContext());
+        requestQueue.add(stringRequest); //Aquí enviamos la solicitud agregando el objeto string request.
+*/
+
+
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+
+
+            @Override
+            public void onResponse(String responsi) {
+                Log.d(responsi,"mensaje");
+            }
+
+        },new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
             }
         }){
             @Override
@@ -197,6 +250,7 @@ public class MisGruposFragment extends Fragment implements Response.Listener<JSO
 
 
         try {
+
             JSONArray json = response.optJSONArray("grupo");
 
             for (int i = 0;i < json.length();i++){
@@ -211,8 +265,17 @@ public class MisGruposFragment extends Fragment implements Response.Listener<JSO
             }
             progress.hide();
             GruposAdapter adapter = new GruposAdapter(listaGrupos);
-
             recyclerGrupos.setAdapter(adapter);
+
+            adapter.setOnclickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                        interfaceComunicaFragments.enviarGrupos1
+                                (listaGrupos.get(recyclerGrupos.getChildAdapterPosition(v)));
+                }
+            });
+            
+
 
             Log.d(String.valueOf(response), "onResponse: ");
         }
@@ -222,12 +285,27 @@ public class MisGruposFragment extends Fragment implements Response.Listener<JSO
                 progress.hide();
         }
     }
+
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        if(context instanceof Activity){
+            this.activity = (Activity) context;
+            interfaceComunicaFragments= (iComunicaFragments) this.activity;
+        }
+    }
+
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
+
     private void recuperarId(){
 
         SharedPreferences preferences = this.getActivity().getSharedPreferences("preferenciasLogin", Context.MODE_PRIVATE);
-
-        IdActualizar =preferences.getString("idok", "");
-        Log.d(IdActualizar, "recuperarId2: ");
+        Idok =preferences.getString("idok", "");
+        Log.d(Idok, "recuperarId2: ");
     }
-
 }
